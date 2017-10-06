@@ -23,10 +23,6 @@ class Stack
     end
   end
 
-
-
-#enqueue(el), dequeue, and show
-
 class Queue
   #first in first out
   def initialize
@@ -48,27 +44,20 @@ class Queue
 
 end
 
-
-
-
-
-#assign(key, value), lookup(key), remove(key), show
-
 class Map
   def initialize
     @map = []
   end
 
   def assign(key,value)
-    if !@map.flatten.include?(key)
+      key_exists = false
       @map.each_with_index do |pair,idx|
         if pair[0] == key
           pair[1] = value
+          key_exists = true
         end
       end
-    else
-      @map << [key,value]
-    end
+      @map << [key,value] if key_exists == false
   end
 
   #return the value of the key
