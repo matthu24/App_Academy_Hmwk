@@ -74,17 +74,28 @@ class Map
   #return the value of the key
   def lookup(key)
     @map.each do |pair|
-      return pair[1] if pair[0] == key 
+      return pair[1] if pair[0] == key
     end
   end
 
   def remove(key)
-
+    @map = @map.reject{|pair| pair[0] == key}
   end
 
   def show(key)
-
+    deep_dup(@map)
   end
 
+  def deep_dup(arr)
+    duped = []
+    arr.each do |el|
+      if el.is_a?(Array)
+        duped << deep_dup(el)
+      else
+        duped << el
+      end
+    end
+    duped
+  end
 
 end
