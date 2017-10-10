@@ -23,9 +23,9 @@ class Mancala
   def take_turn(current_player)
     move_result = :prompt
 
-    #move result can either be switch 
+    #move result can either be switch
     until move_result == :switch
-      #if player ends in own cup
+      #if player ends in own points cup
       if move_result == :prompt
         print_indices
 

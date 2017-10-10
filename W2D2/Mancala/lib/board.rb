@@ -20,45 +20,39 @@ class Board
   end
 
   def valid_move?(start_pos)
-    raise "Invalid starting cup" if start_pos > 13 || start_pos < 1
+    raise "Invalid starting cup" if start_pos > 12 || start_pos < 0
+    raise "Invalid starting cup" if @cups[start_pos].empty?
   end
 
-  #returns either :prompt when end in own cup
-  #:ending_cup_idx when in a cup that already has stones in it
-  #:switch when in a cup that is empty
   def make_move(start_pos, current_player_name)
-
-    #how many times we need to distribute
-    number_of_stones = @cups[start_pos].length
+    stones = @cups[start_pos]
     @cups[start_pos] = []
 
-    count = 1
-    until count > number_of_stones
-      next_cup = start_pos + count
-      #handles wrapping around
-      next_cup = next_cup % 14
-      #distributes stones
-      @cups[next_cup] << :stone
-      #when landing on opponent's cup, skip and add to number_of_stones so you put one more stone that you saved when skipping the opponent's cup
-      if (next_cup == 6 && current_player_name == @name2) || (next_cup == 13 && current_player_name == @name1)
-        number_of_stones += 1
-        @cups[next_cup].pop
+    next_cup_pos = start_pos
+    until stones.empty?
+      next_cup_pos +=1
+      next_cup_pos = next_cup_pos % 14
+      if next_cup_pos == 13
+        @cups[next_cup_pos] << stones.pop if @name2 == current_player_name
+      elsif next_cup_pos == 6
+        @cups[next_cup_pos] << stones.pop if @name1 == current_player_name
+      else
+        @cups[next_cup_pos] << stones.pop
       end
-
-      count+=1
     end
-
-    #name 1's cup is 6
-    #name 2's cup is 13
     render
-    next_turn(next_cup)
-    return :prompt if (next_cup == 6 && current_player_name == @name1) || (next_cup == 13 && current_player_name == @name2)
-    return :switch if @cups[next_cup].length == 1
-    return next_cup if @cups[next_cup].length > 1
+    next_turn(next_cup_pos)
   end
 
   def next_turn(next_cup)
     # helper method to determine what #make_move returns
+    if next_cup == 6 || next_cup == 13
+      return :prompt
+    elsif @cups[next_cup].count == 1
+      return :switch
+    else
+      return next_cup
+    end
   end
 
   def render
