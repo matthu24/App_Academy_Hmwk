@@ -4,55 +4,52 @@ class Board
   def initialize(name1, name2)
     @name1 = name1
     @name2 = name2
-    @cups = Array.new(14)
+    @cups = []
+    14.times {@cups << []}
     place_stones
+
   end
 
   def place_stones
-    # helper method to #initialize every non-store cup with four stones each
-    @cups.each_with_index do |cup,index|
-      if index == 6 || index == 13
-        @cups[index] = []
-      else
-        @cups[index] = [:stone, :stone, :stone, :stone]
-      end
+    @cups.each_index do |idx|
+      @cups[idx] += [:stone,:stone,:stone,:stone] unless idx == 6 || idx == 13
     end
   end
 
   def valid_move?(start_pos)
-    raise "Invalid starting cup" if start_pos > 12 || start_pos < 0
-    raise "Invalid starting cup" if @cups[start_pos].empty?
+    raise 'Invalid starting cup' if start_pos >= 13 || start_pos <= 0
   end
 
   def make_move(start_pos, current_player_name)
     stones = @cups[start_pos]
     @cups[start_pos] = []
-
-    next_cup_pos = start_pos
+    next_cup = start_pos
     until stones.empty?
-      next_cup_pos +=1
-      next_cup_pos = next_cup_pos % 14
-      if next_cup_pos == 13
-        @cups[next_cup_pos] << stones.pop if @name2 == current_player_name
-      elsif next_cup_pos == 6
-        @cups[next_cup_pos] << stones.pop if @name1 == current_player_name
-      else
-        @cups[next_cup_pos] << stones.pop
+      next_cup+=1
+      if next_cup == 14
+        next_cup = 0
       end
+      @cups[next_cup] << stones.pop unless next_cup == 13 && current_player_name == @name1 || next_cup == 6 && current_player_name == @name2
+
     end
+
+
+
     render
-    next_turn(next_cup_pos)
+    next_turn(next_cup)
   end
 
+#logic for returning prompt,switch or end cup idx
   def next_turn(next_cup)
-    # helper method to determine what #make_move returns
-    if next_cup == 6 || next_cup == 13
+    if next_cup == 13 || next_cup == 6
       return :prompt
-    elsif @cups[next_cup].count == 1
+    elsif @cups[next_cup].length == 1
       return :switch
-    else
+
+    elsif @cups[next_cup].length > 1
       return next_cup
     end
+
   end
 
   def render
@@ -64,13 +61,12 @@ class Board
   end
 
   def one_side_empty?
-    @cups[0..5].all?{|el| el.empty?} || @cups[7..12].all?{|el| el.empty?}
+    @cups[0..5].all?{|cup| cup.empty?} || @cups[7..12].all?{|cup| cup.empty?}
   end
 
   def winner
-    #if one_side_empty?
-      return :draw if @cups[6].length == @cups[13].length
-      return (@cups[6].length > @cups[13].length) ?  @name1 :  @name2
-    #end
+        return @name1 if @cups[6].length > @cups[13].length
+        return @name2 if @cups[6].length < @cups[13].length
+        return :draw
   end
 end
