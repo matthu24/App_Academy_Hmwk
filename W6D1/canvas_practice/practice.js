@@ -1,8 +1,9 @@
 document.addEventListener("DOMContentLoaded", function(){
   let canvas = document.getElementById('mycanvas');
-  var ctx = canvas.getContext('2d');
   canvas.width = 500;
   canvas.height = 500;
+  let ctx = canvas.getContext('2d');
+
 
   //draw a rectangle
   ctx.fillStyle = 'rgb(200,0,0)'; // sets the color to fill in the rectangle with
