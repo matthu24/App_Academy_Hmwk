@@ -14,7 +14,17 @@ class Calculator extends React.Component{
     this.clear = this.clear.bind(this);
   }
 
-  //your code here
+  //Notes:
+  //sumNum1 is called whenever OnChange event listener happens in the first input field.
+  //the ternary operator is in case the user inputs a backspace and leaves nothing in the field
+  //if this happens, an empty string is returned instead of trying to turn nothing into an integer
+  //e.target is the input field
+  //the value of e.target is set by this.state.num1
+
+  //regarding the short hand for setState:
+  //setState usually takes a key value hash
+  //if the key and value have the same value, can just put one of them
+
 
   setNum1(e){
     const num1 = e.target.value ? parseInt(e.target.value) : "";
@@ -30,6 +40,7 @@ class Calculator extends React.Component{
     e.preventDefault();
     const result = this.state.num1 + this.state.num2;
     this.setState({result});
+    console.log(this.state);
   }
 
   subtract(e){
@@ -57,25 +68,25 @@ class Calculator extends React.Component{
 }
 
 
-
-
+//num1, num2, and result are variables set to the state values
+//when input is changed, setNum is called
+//setNum turns the string number inputted by user and parseInt to an integer, and sets num1 state as the integer
+//the value of the input is then also set to that integer
   render(){
     const {num1,num2,result} = this.state;
     return (
       <div>
         <h1>{result}</h1>
-        //whenever input field is changed, on change event is executed: which is
-        //setNum1, setNum1 changes the state, and the value is updated to num1 which is taken from this.state
-        //(
+
             <input onChange = {this.setNum1} value={num1}/>
         <input onChange = {this.setNum2} value={num2}/>
           <button onClick={this.clear}>Clear</button>
        <br />
-       //whenever button is clicked, onClick event is executed, which changes the state of
-       //result, result is then outputted in h1 above
+
        <button onClick={this.add}>+</button>
        <button onClick={this.subtract}>-</button>
        <button onClick={this.multiply}>*</button>
+       <button onClick={this.divide}>/</button>
 
       </div>
     );
